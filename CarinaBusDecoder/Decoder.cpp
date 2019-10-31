@@ -32,6 +32,13 @@ void Decoder::DecodeByte(unsigned char byte, bool headerByte)
 		++bufferLength;
 		crc += byte;
 	}
+	else
+	{
+		destination->NonPacketBytesReceived(&buffer[bytesSentToDestination], bufferSize - bytesSentToDestination);
+		bufferLength = 0;
+		bytesSentToDestination = 0;
+		crc = 0;
+	}
 
 	if(bufferLength >= sizeof(BusHeader))
 	{
@@ -81,6 +88,19 @@ void Decoder::DecodeBytes(unsigned char const* bytes, unsigned int length)
 
 			DecodeByte(byte, ninthBitSet && !lastByteHadNinthBitSet);
 			lastByteHadNinthBitSet = ninthBitSet;
+			if(ninthBitSet)
+			{
+				++numberOfHeaderBytes;
+				if(numberOfHeaderBytes == 4)
+				{
+					lastByteHadNinthBitSet = false;
+					numberOfHeaderBytes = 0;
+				}
+			}
+			else
+			{
+				numberOfHeaderBytes = 0;
+			}
 			ninthBitSet = false;
 		}
 	}

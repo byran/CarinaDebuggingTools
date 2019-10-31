@@ -6,19 +6,35 @@
 #include "RawPacketDestination.h"
 #include "ValuePacketValues.h"
 
+char const BytesTitle[] =      "Bytes     ";
+char const PacketTitle[] =     "Packet    ";
+char const SyncTitle[] =       "Sync      ";
+char const TimeslotTitle[] =   "TimeSlot  ";
+char const ValueTitle[] =      "Value     ";
+char const DismantleTitle[] =  "Dismantle ";
+
 class PacketOutput : public RawPacketDestination
 {
 public:
+	unsigned int packetCount{0};
+
+	void OutputPacketCount()
+	{
+		std::cout << std::dec << std::setfill('0') << std::setw(8) << packetCount << ": ";
+	}
+
 	void NonPacketBytesReceived(unsigned char* bytes, unsigned int length) override
 	{
-		std::cout << std::dec << "Non packet bytes " << length;
+		OutputPacketCount();
+
+		std::cout << BytesTitle << std::dec << length;
 		if(length >= sizeof(BusHeader))
 		{
 			auto header = reinterpret_cast<BusHeader*>(bytes);
 			auto totalLength = header->dataLength + sizeof(BusHeader) + sizeof(crc_t);
 			std::cout << " (" << totalLength << ")";
 		}
-		std::cout << "\n" << std::hex << std::setfill('0');
+		std::cout << " " << std::hex << std::setfill('0');
 		for(unsigned int i = 0; i < length; ++i)
 		{
 			std::cout << std::setw(2) << static_cast<unsigned int>(bytes[i]) << ' ';
@@ -28,6 +44,9 @@ public:
 
 	void PacketReceived(BusHeader* header, unsigned int totalPacketLength) override
 	{
+		OutputPacketCount();
+		++packetCount;
+
 		switch (header->packetType)
 		{
 		case BPT_NORMAL_SYNC:
@@ -41,8 +60,12 @@ public:
 			TimeslotInUsePacketReceived(reinterpret_cast<TimeslotInUsePacket*>(header),
 										totalPacketLength);
 			break;
+		case BPT_DISMANTLE_BUS:
+			DismantlePacketReceived(reinterpret_cast<BusDismantlePacket*>(header),
+										totalPacketLength);
+			break;
 		default:
-			std::cout << "Packet " << static_cast<unsigned int>(header->packetType)
+			std::cout << PacketTitle << static_cast<unsigned int>(header->packetType)
 					  << " (" << header->dataLength << ")\n";
 			break;
 		}
@@ -50,14 +73,31 @@ public:
 
 	void PacketWithInvalidCrcReceived(BusHeader* header) override
 	{
+		OutputPacketCount();
+
 		std::cout << "Packet with invalid crc\n";
+		auto buffer = reinterpret_cast<unsigned char*>(header);
+		for(uint32_t i = 0; i < (header->dataLength + sizeof(BusHeader)); ++i)
+		{
+			std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<uint32_t>(buffer[i]) << " ";
+		}
+		std::cout << "\n";
 	}
 
+	uint32_t previousMap;
 	void NormalSyncPacketReceived(BusSyncPacket* packet, unsigned int totalPacketLength)
 	{
 		unsigned int const mapMask = (1 << NUMBER_OF_BUS_TIMESLOTS) - 1;
-		std::cout << "Sync packet " << std::hex << std::setw(6) << std::setfill('0')
-			<< (packet->data.map & mapMask)
+		uint32_t const map = (packet->data.map & mapMask);
+
+		if(map != previousMap)
+		{
+			std::cout << "Map Changed ";
+		}
+		previousMap = map;
+
+		std::cout << SyncTitle << std::hex << std::setw(6) << std::setfill('0')
+			<< map
 			<< " And: " << std::setw(8) << packet->data.andValues
 			<< " Or: " << std::setw(8) << packet->data.orValues
 			<< "\n";
@@ -65,17 +105,30 @@ public:
 
 	void ValuesPacketReceived(BusValuesPacketPreamble* preamble, unsigned int totalPacketLength)
 	{
-		std::cout << "Number of values " << NumberOfValues(preamble) << "\n";
+		std::cout << ValueTitle << std::dec << preamble->data.slot << "\n";
+		uint16_t required = 291 - 177;
+		uint16_t requiredUpper = required + 4;
+		//std::cout << "Number of values " << NumberOfValues(preamble) << "\n";
 
 		for(auto&& value : preamble)
 		{
-			std::cout << "\t" << std::dec << std::setw(4) << std::setfill('0')
-				<< (value.index & 0x7FFFu) << " => " << value.value << "\n";
+			auto const index = (value.index & 0x7FFFu);
+			if(index >= required && index < requiredUpper)
+			{
+				std::cout << std::dec << std::setw(4) << std::setfill('0')
+					<< (value.index & 0x7FFFu) << " => " << value.value << "\n";
+			}
 		}
 	}
 
 	void TimeslotInUsePacketReceived(TimeslotInUsePacket* packet, unsigned int totalPacketLength)
 	{
+		std::cout << TimeslotTitle << packet->data.slot << "\n";
+	}
+
+	void DismantlePacketReceived(BusDismantlePacket* packet, unsigned int totalPacketLength)
+	{
+		std::cout << DismantleTitle << "\n";
 	}
 };
 

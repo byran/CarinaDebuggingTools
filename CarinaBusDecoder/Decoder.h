@@ -15,6 +15,7 @@ private:
 	bool inEscape{false};
 	bool ninthBitSet{false};
 	bool lastByteHadNinthBitSet{false};
+	unsigned int numberOfHeaderBytes{0};
 
 	BusHeader* header{reinterpret_cast<BusHeader*>(buffer)};
 
