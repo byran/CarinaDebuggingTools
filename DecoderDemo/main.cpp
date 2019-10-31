@@ -3,9 +3,10 @@
 #include <iomanip>
 #include "Decoder.h"
 
-#include "DecodedPacketDestination.h"
+#include "RawPacketDestination.h"
+#include "ValuePacketValues.h"
 
-class PacketOutput : public DecodedPacketDestination
+class PacketOutput : public RawPacketDestination
 {
 public:
 	void NonPacketBytesReceived(unsigned char* bytes, unsigned int length) override
@@ -25,13 +26,34 @@ public:
 		std::cout << "\n";
 	}
 
-	void UnknownPacketReceived(BusHeader* header) override
+	void PacketReceived(BusHeader* header, unsigned int totalPacketLength) override
 	{
-		std::cout << "Packet " << static_cast<unsigned int>(header->packetType)
-		<< " (" << header->dataLength << ")\n";
+		switch (header->packetType)
+		{
+		case BPT_NORMAL_SYNC:
+			NormalSyncPacketReceived(reinterpret_cast<BusSyncPacket*>(header), totalPacketLength);
+			break;
+		case BPT_VALUES:
+			ValuesPacketReceived(reinterpret_cast<BusValuesPacketPreamble*>(header),
+								 totalPacketLength);
+			break;
+		case BPT_TIMESLOT_IN_USE:
+			TimeslotInUsePacketReceived(reinterpret_cast<TimeslotInUsePacket*>(header),
+										totalPacketLength);
+			break;
+		default:
+			std::cout << "Packet " << static_cast<unsigned int>(header->packetType)
+					  << " (" << header->dataLength << ")\n";
+			break;
+		}
 	}
 
-	void NormalSyncPacketReceived(BusSyncPacket* packet, unsigned int totalPacketLength) override
+	void PacketWithInvalidCrcReceived(BusHeader* header) override
+	{
+		std::cout << "Packet with invalid crc\n";
+	}
+
+	void NormalSyncPacketReceived(BusSyncPacket* packet, unsigned int totalPacketLength)
 	{
 		unsigned int const mapMask = (1 << NUMBER_OF_BUS_TIMESLOTS) - 1;
 		std::cout << "Sync packet " << std::hex << std::setw(6) << std::setfill('0')
@@ -41,15 +63,18 @@ public:
 			<< "\n";
 	}
 
-	void ValuesPacketReceived(BusValuesPacketPreamble* preamble, unsigned int totalPacketLength) override
+	void ValuesPacketReceived(BusValuesPacketPreamble* preamble, unsigned int totalPacketLength)
 	{
-		unsigned int sizeofValues = totalPacketLength - (sizeof(BusValuesPacketPreamble) + sizeof(crc_t));
-		unsigned int numberOfValues = sizeofValues / sizeof(IndexAndValue);
-		auto values = reinterpret_cast<IndexAndValue*>(&preamble[1]);
-		std::cout << "Number of values " << numberOfValues << "\n";
+		std::cout << "Number of values " << NumberOfValues(preamble) << "\n";
+
+		for(auto&& value : preamble)
+		{
+			std::cout << "\t" << std::dec << std::setw(4) << std::setfill('0')
+				<< (value.index & 0x7FFFu) << " => " << value.value << "\n";
+		}
 	}
 
-	void TimeslotInUsePacketReceived(TimeslotInUsePacket* packet, unsigned int totalPacketLength) override
+	void TimeslotInUsePacketReceived(TimeslotInUsePacket* packet, unsigned int totalPacketLength)
 	{
 	}
 };
@@ -59,7 +84,12 @@ int main(int argc, char** argv)
 	PacketOutput output;
 	Decoder decoder{&output};
 
-	std::ifstream file{"/home/byran/bus_log.bin"};
+	if(argc < 2)
+	{
+		std::cerr << "No file specified\n";
+		return 1;
+	}
+	std::ifstream file{argv[1]};
 
 	char buffer[1024];
 	unsigned int readLength;

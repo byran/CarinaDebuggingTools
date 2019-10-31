@@ -1,7 +1,7 @@
 #ifndef CARINABUSDEBUGGER_DECODER_H
 #define CARINABUSDEBUGGER_DECODER_H
 
-#include "DecodedPacketDestination.h"
+#include "RawPacketDestination.h"
 
 struct BusHeader;
 
@@ -11,6 +11,7 @@ private:
 	static unsigned int const bufferSize = 1024;
 	unsigned char buffer[bufferSize];
 	unsigned int bufferLength{0};
+	crc_t crc{0};
 	bool inEscape{false};
 	bool ninthBitSet{false};
 	bool lastByteHadNinthBitSet{false};
@@ -18,9 +19,9 @@ private:
 	BusHeader* header{reinterpret_cast<BusHeader*>(buffer)};
 
 	unsigned int bytesSentToDestination{0};
-	DecodedPacketDestination* const destination;
+	RawPacketDestination* const destination;
 public:
-	Decoder(DecodedPacketDestination* destination);
+	Decoder(RawPacketDestination* destination);
 private:
 	void DecodeByte(unsigned char byte, bool headerByte);
 public:
