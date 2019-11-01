@@ -36,7 +36,7 @@ namespace
 		// no canonical processing
 		tty.c_oflag = 0;                // no remapping, no delays
 		tty.c_cc[VMIN] = 0;            // read doesn't block
-		tty.c_cc[VTIME] = 5;            // 0.5 seconds read timeout
+		tty.c_cc[VTIME] = 0;            // 0.5 seconds read timeout
 
 		tty.c_iflag &= ~(IXON | IXOFF | IXANY); // shut off xon/xoff ctrl
 
@@ -85,7 +85,7 @@ SerialPort::SerialPort(char const* portname)
 		return;
 	}
 
-	set_interface_attribs (fd, B2000000, 0);  // set speed to 115,200 bps, 8n1 (no parity)
+	set_interface_attribs (fd, B2000000, 0);  // set speed to 2,000,000 bps, 8n1 (no parity)
 	//set_blocking (fd, 0);                // set no blocking
 }
 
