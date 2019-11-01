@@ -56,9 +56,7 @@ int main(int argc, char** argv)
 
 	while(running)
 	{
-		std::this_thread::sleep_for(std::chrono::milliseconds{10});
-
-		char buffer[16384];
+		char buffer[100];
 		auto readLength = port.Read(buffer, sizeof(buffer));
 
 		if(readLength)
@@ -69,6 +67,11 @@ int main(int argc, char** argv)
 
 			file.write(reinterpret_cast<char const*>(&header), sizeof(header));
 			file.write(buffer, readLength);
+		}
+
+		if(readLength != sizeof(buffer))
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds{1});
 		}
 	}
 

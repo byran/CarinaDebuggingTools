@@ -47,6 +47,8 @@ namespace
 		tty.c_cflag &= ~CSTOPB;
 		tty.c_cflag &= ~CRTSCTS;
 
+		cfmakeraw(&tty);
+
 		if (tcsetattr(fd, TCSANOW, &tty) != 0)
 		{
 			//error_message ("error %d from tcsetattr", errno);
@@ -75,7 +77,6 @@ namespace
 	}
 }
 //char *portname = "/dev/ttyUSB1"
-
 SerialPort::SerialPort(char const* portname)
 {
 	fd = open (portname, O_RDWR | O_NOCTTY | O_SYNC);
