@@ -4,7 +4,7 @@ add_library(CarinaBusDecoder
 		RawPacketDestination.h
 		ValuePacketValues.cpp
 		ValuePacketValues.h
-		)
+		RecordedLogFile.cpp RecordedLogFile.h)
 
 target_link_libraries(CarinaBusDecoder PUBLIC
 		Carina::Bus

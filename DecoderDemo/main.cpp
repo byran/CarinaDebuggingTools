@@ -23,7 +23,7 @@ public:
 		std::cout << std::dec << std::setfill('0') << std::setw(8) << packetCount << ": ";
 	}
 
-	void NonPacketBytesReceived(unsigned char* bytes, unsigned int length) override
+	void NonPacketBytesReceived(unsigned char* bytes, unsigned int length, uint32_t time) override
 	{
 		OutputPacketCount();
 
@@ -42,7 +42,7 @@ public:
 		std::cout << "\n";
 	}
 
-	void PacketReceived(BusHeader* header, unsigned int totalPacketLength) override
+	void PacketReceived(BusHeader* header, unsigned int totalPacketLength, uint32_t time) override
 	{
 		OutputPacketCount();
 		++packetCount;
@@ -71,7 +71,7 @@ public:
 		}
 	}
 
-	void PacketWithInvalidCrcReceived(BusHeader* header) override
+	void PacketWithInvalidCrcReceived(BusHeader* header, uint32_t time) override
 	{
 		OutputPacketCount();
 

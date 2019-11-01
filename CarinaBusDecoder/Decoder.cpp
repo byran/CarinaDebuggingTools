@@ -16,7 +16,7 @@ void Decoder::DecodeByte(unsigned char byte, bool headerByte)
 {
 	if(bufferLength == bufferSize)
 	{
-		destination->NonPacketBytesReceived(buffer, bufferSize);
+		destination->NonPacketBytesReceived(buffer, bufferSize, currentTimestamp);
 		bufferLength = 0;
 		crc = 0;
 	}
@@ -25,7 +25,7 @@ void Decoder::DecodeByte(unsigned char byte, bool headerByte)
 	{
 		if(bufferLength > 0)
 		{
-			destination->NonPacketBytesReceived(buffer, bufferLength);
+			destination->NonPacketBytesReceived(buffer, bufferLength, currentTimestamp);
 		}
 		bufferLength = 0;
 		crc = 0;
@@ -47,11 +47,11 @@ void Decoder::DecodeByte(unsigned char byte, bool headerByte)
 
 			if(crc == transmittedCrc)
 			{
-				destination->PacketReceived(header, requiredLength);
+				destination->PacketReceived(header, requiredLength, currentTimestamp);
 			}
 			else
 			{
-				destination->PacketWithInvalidCrcReceived(header);
+				destination->PacketWithInvalidCrcReceived(header, currentTimestamp);
 			}
 			bufferLength = 0;
 			crc = 0;
@@ -100,4 +100,10 @@ void Decoder::DecodeBytes(unsigned char const* bytes, unsigned int length)
 			ninthBitSet = false;
 		}
 	}
+}
+
+void Decoder::DecodeBytes(uint32_t timeMilliseconds, char* buffer, uint32_t bufferLength)
+{
+	currentTimestamp = timeMilliseconds;
+	DecodeBytes(reinterpret_cast<unsigned char *>(buffer), bufferLength);
 }
