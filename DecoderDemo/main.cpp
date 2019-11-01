@@ -18,14 +18,14 @@ class PacketOutput : public RawPacketDestination
 public:
 	unsigned int packetCount{0};
 
-	void OutputPacketCount()
+	void OutputTimeAndPacketCount(uint32_t time)
 	{
-		std::cout << std::dec << std::setfill('0') << std::setw(8) << packetCount << ": ";
+		std::cout << std::dec << std::setfill('0') << std::setw(8) << time << " | " << std::setw(8) << packetCount << ": ";
 	}
 
 	void NonPacketBytesReceived(unsigned char* bytes, unsigned int length, uint32_t time) override
 	{
-		OutputPacketCount();
+		OutputTimeAndPacketCount(time);
 
 		std::cout << BytesTitle << std::dec << length;
 		if(length >= sizeof(BusHeader))
@@ -44,7 +44,7 @@ public:
 
 	void PacketReceived(BusHeader* header, unsigned int totalPacketLength, uint32_t time) override
 	{
-		OutputPacketCount();
+		OutputTimeAndPacketCount(time);
 		++packetCount;
 
 		switch (header->packetType)
@@ -73,7 +73,7 @@ public:
 
 	void PacketWithInvalidCrcReceived(BusHeader* header, uint32_t time) override
 	{
-		OutputPacketCount();
+		OutputTimeAndPacketCount(time);
 
 		std::cout << "Packet with invalid crc\n";
 		auto buffer = reinterpret_cast<unsigned char*>(header);
