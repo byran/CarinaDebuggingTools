@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <iomanip>
+#include <cstring>
 #include "Decoder.h"
 
 #include "RawPacketDestination.h"
@@ -132,17 +133,11 @@ public:
 	}
 };
 
-int main(int argc, char** argv)
+int ParseNonTimestampedFile(char* fileName)
 {
 	PacketOutput output;
 	Decoder decoder{&output};
-
-	if(argc < 2)
-	{
-		std::cerr << "No file specified\n";
-		return 1;
-	}
-	std::ifstream file{argv[1]};
+	std::ifstream file{fileName};
 
 	char buffer[1024];
 	unsigned int readLength;
@@ -153,4 +148,34 @@ int main(int argc, char** argv)
 	} while(readLength > 0);
 
 	std::cout << std::dec << "Packets parsed: " << decoder.packetsParsed << std::endl;
+	return 0;
+}
+
+int ParseTimestampedFile(char* fileName)
+{
+	PacketOutput output;
+	Decoder decoder{&output};
+	DecodeRecordedLogFile(fileName, &decoder);
+	return 0;
+}
+
+int main(int argc, char** argv)
+{
+	if(argc < 3)
+	{
+		std::cerr << "No file specified\n";
+		return 1;
+	}
+
+	if(strcmp(argv[1], "old") == 0)
+	{
+		return ParseNonTimestampedFile(argv[2]);
+	}
+
+	if(strcmp(argv[1], "timestamped") == 0)
+	{
+		return ParseTimestampedFile(argv[2]);
+	}
+
+	return 2;
 }
