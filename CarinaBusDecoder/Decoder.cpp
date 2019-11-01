@@ -14,31 +14,26 @@ Decoder::Decoder(RawPacketDestination* destination)
 
 void Decoder::DecodeByte(unsigned char byte, bool headerByte)
 {
-	if (headerByte && (byte == BSB_START_PACKET))
+	if(bufferLength == bufferSize)
 	{
-		auto const lengthNotSent = bufferLength - bytesSentToDestination;
-		if(lengthNotSent > 0)
-		{
-			destination->NonPacketBytesReceived(&buffer[bytesSentToDestination], lengthNotSent);
-		}
+		destination->NonPacketBytesReceived(buffer, bufferSize);
 		bufferLength = 0;
-		bytesSentToDestination = 0;
 		crc = 0;
 	}
 
-	if(bufferLength < bufferSize)
+	if (headerByte && (byte == BSB_START_PACKET))
 	{
-		buffer[bufferLength] = byte;
-		++bufferLength;
-		crc += byte;
-	}
-	else
-	{
-		destination->NonPacketBytesReceived(&buffer[bytesSentToDestination], bufferSize - bytesSentToDestination);
+		if(bufferLength > 0)
+		{
+			destination->NonPacketBytesReceived(buffer, bufferLength);
+		}
 		bufferLength = 0;
-		bytesSentToDestination = 0;
 		crc = 0;
 	}
+
+	buffer[bufferLength] = byte;
+	++bufferLength;
+	crc += byte;
 
 	if(bufferLength >= sizeof(BusHeader))
 	{
@@ -58,7 +53,8 @@ void Decoder::DecodeByte(unsigned char byte, bool headerByte)
 			{
 				destination->PacketWithInvalidCrcReceived(header);
 			}
-			bytesSentToDestination = bufferLength;
+			bufferLength = 0;
+			crc = 0;
 			++packetsParsed;
 		}
 	}

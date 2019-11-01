@@ -19,7 +19,6 @@ private:
 
 	BusHeader* header{reinterpret_cast<BusHeader*>(buffer)};
 
-	unsigned int bytesSentToDestination{0};
 	RawPacketDestination* const destination;
 public:
 	Decoder(RawPacketDestination* destination);
