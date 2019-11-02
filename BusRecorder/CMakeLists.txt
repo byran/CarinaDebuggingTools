@@ -4,4 +4,5 @@ add_executable(BusRecorder
 
 target_link_libraries(BusRecorder
 		Serial
+		CarinaBusDecoder
 		)

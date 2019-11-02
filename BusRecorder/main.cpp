@@ -1,4 +1,5 @@
 #include "SerialPort.h"
+#include "TimestampedBytesHeader.h"
 
 #include <iostream>
 #include <string>
@@ -11,12 +12,6 @@
 using namespace std::string_literals;
 
 volatile bool running = true;
-
-struct blockHeader
-{
-	uint32_t	time;
-	uint32_t	length;
-} __attribute__((packed));
 
 void sigIntHandler(int)
 {
@@ -61,7 +56,7 @@ int main(int argc, char** argv)
 
 		if(readLength)
 		{
-			blockHeader header;
+			TimestampedBytesHeader header;
 			header.time = getTimeDelta(startTime);
 			header.length = readLength;
 
