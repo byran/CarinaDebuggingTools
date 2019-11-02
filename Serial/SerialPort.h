@@ -7,6 +7,7 @@ class SerialPort
 {
 private:
 	int fd{-1};
+
 public:
 	SerialPort(char const* portname);
 
@@ -14,4 +15,4 @@ public:
 	size_t Read(void* buffer, size_t length);
 };
 
-#endif //CARINABUSDEBUGGER_SERIALPORT_H
+#endif  // CARINABUSDEBUGGER_SERIALPORT_H

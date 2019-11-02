@@ -22,14 +22,18 @@ private:
 
 	RawPacketDestination* const destination;
 	uint32_t currentTimestamp{0};
+
 public:
 	Decoder(RawPacketDestination* destination);
+
 private:
 	void DecodeByte(unsigned char byte, bool headerByte);
+
 public:
 	void DecodeBytes(unsigned char const* bytes, unsigned int length);
-	void DecodeBytes(uint32_t timeMilliseconds, char* buffer, uint32_t bufferLength) override;
+	void DecodeBytes(uint32_t timeMilliseconds, char* buffer,
+					 uint32_t bufferLength) override;
 	unsigned int packetsParsed{0};
 };
 
-#endif //CARINABUSDEBUGGER_DECODER_H
+#endif  // CARINABUSDEBUGGER_DECODER_H

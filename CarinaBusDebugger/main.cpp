@@ -5,12 +5,13 @@
 #include <sdl_cpp/sdl_cpp.h>
 #include <sdl_cpp/widgets/widgets.h>
 
-#include <thread>
 #include <chrono>
+#include <thread>
 
 int main(int argc, char** argv)
 {
-	sdl::widgets::window_application app{argc, argv, "Bus Debugger", 0, 0, 2000, 900};
+	sdl::widgets::window_application app{argc, argv, "Bus Debugger", 0, 0,
+										 2000, 900};
 	sdl::mouse_state mouse{app.mouse_events};
 
 	app.resize_font(16);
@@ -19,7 +20,7 @@ int main(int argc, char** argv)
 	int const rows = 44;
 
 	int i = 0;
-	for(auto&& v : value)
+	for (auto&& v : value)
 	{
 		int const y = ((i % rows) * 20) + 10;
 		int const x = ((i / rows) * 56) + 10;
@@ -32,13 +33,13 @@ int main(int argc, char** argv)
 
 	i = 0;
 	std::chrono::milliseconds sleepTime{16};
-	while(!app.quit)
+	while (!app.quit)
 	{
 		app.events.poll();
 		++i;
 		i %= 1000;
 
-		for(auto&& v : value)
+		for (auto&& v : value)
 		{
 			v.text(std::to_string(i));
 		}

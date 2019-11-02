@@ -5,8 +5,8 @@
 
 struct TimestampedBytesHeader
 {
-	uint32_t	time;
-	uint32_t	length;
+	uint32_t time;
+	uint32_t length;
 } __attribute__((packed));
 
-#endif //CARINABUSDEBUGGER_TIMESTAMPEDBYTESHEADER_H
+#endif  // CARINABUSDEBUGGER_TIMESTAMPEDBYTESHEADER_H

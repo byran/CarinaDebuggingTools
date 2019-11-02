@@ -1,13 +1,13 @@
 #include "SerialPort.h"
 #include "TimestampedBytesHeader.h"
 
-#include <iostream>
-#include <string>
+#include <signal.h>
 #include <sys/time.h>
 #include <chrono>
-#include <thread>
-#include <signal.h>
 #include <fstream>
+#include <iostream>
+#include <string>
+#include <thread>
 
 using namespace std::string_literals;
 
@@ -32,13 +32,13 @@ uint32_t getTimeDelta(timeval startTime)
 
 int main(int argc, char** argv)
 {
-	if(argc < 3)
+	if (argc < 3)
 	{
 		std::cerr << "Invlaid number of arguments\n";
 		return -1;
 	}
 
- 	std::string devicePath = "/dev/"s + argv[1];
+	std::string devicePath = "/dev/"s + argv[1];
 
 	std::ofstream file(argv[2], std::ios_base::binary);
 
@@ -49,12 +49,12 @@ int main(int argc, char** argv)
 
 	signal(SIGINT, sigIntHandler);
 
-	while(running)
+	while (running)
 	{
 		char buffer[100];
 		auto readLength = port.Read(buffer, sizeof(buffer));
 
-		if(readLength)
+		if (readLength)
 		{
 			TimestampedBytesHeader header;
 			header.time = getTimeDelta(startTime);
@@ -64,13 +64,14 @@ int main(int argc, char** argv)
 			file.write(buffer, readLength);
 		}
 
-		if(readLength != sizeof(buffer))
+		if (readLength != sizeof(buffer))
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds{1});
 		}
 	}
 
-	std::cout << "exited" << "\n";
+	std::cout << "exited"
+			  << "\n";
 
 	return 0;
 }
