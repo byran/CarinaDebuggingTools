@@ -6,7 +6,7 @@
             <name>TxENMonitor</name>
             <creation-uuid>f236af52-557c-49a5-a4ff-9591e958877c</creation-uuid>
             <make-project-type>0</make-project-type>
-            <c-extensions/>
+            <c-extensions>c</c-extensions>
             <cpp-extensions>cpp</cpp-extensions>
             <header-extensions/>
             <asminc-extensions/>
