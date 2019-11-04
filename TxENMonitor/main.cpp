@@ -1,12 +1,16 @@
 #include <p32xxxx.h>
 #include <cstdint>
 
-const uint32_t portBPinMask = 0b1110111110101100;
+//const uint32_t portBPinMask = 0b1110111110101100;
+const uint32_t portBPinMask = 0b1110100000000000;
 const uint32_t portATxEnable = 1;
 const uint32_t portATxEnableClash = 2;
 
 int main(int argc, char** argv)
 {
+    ANSELA = 0;
+    ANSELB = 0;
+    
     TRISB = 0xFFFF;
     
     LATACLR = portATxEnable | portATxEnableClash;
