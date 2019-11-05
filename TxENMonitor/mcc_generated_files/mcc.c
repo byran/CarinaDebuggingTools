@@ -51,7 +51,7 @@
 
 // DEVCFG2
 #pragma config FPLLIDIV = DIV_2    // PLL Input Divider->2x Divider
-#pragma config FPLLMUL = MUL_20    // PLL Multiplier->20x Multiplier
+#pragma config FPLLMUL = MUL_24    // PLL Multiplier->24x Multiplier
 #pragma config FPLLODIV = DIV_2    // System PLL Output Clock Divider->PLL Divide by 2
 
 // DEVCFG1
@@ -69,7 +69,7 @@
 
 // DEVCFG0
 #pragma config DEBUG = OFF    // Background Debugger Enable->Debugger is Disabled
-#pragma config JTAGEN = ON    // JTAG Enable->JTAG Port Enabled
+#pragma config JTAGEN = OFF    // JTAG Enable->JTAG Disabled
 #pragma config ICESEL = ICS_PGx1    // ICE/ICD Comm Channel Select->Communicate on PGEC1/PGED1
 #pragma config PWP = OFF    // Program Flash Write Protect->Disable
 #pragma config BWP = OFF    // Boot Flash Write Protect bit->Protection Disabled
@@ -118,8 +118,8 @@ void SYSTEM_RegLock(void)
 void OSCILLATOR_Initialize(void)
 {
     SYSTEM_RegUnlock(); 
-    // CF no clock failure; COSC FRCPLL; PLLODIV DIV_2; PBDIVRDY disabled; SLOCK out of lock; FRCDIV FRC/1; SLPEN Idle on WAIT instruction; NOSC FRCPLL; PLLMULT MUL_20; SOSCEN disabled; PBDIV DIV_8; CLKLOCK unlocked; OSWEN Switch is Complete; SOSCRDY disabled; 
-    OSCCON = 0x81D1100;
+    // CF no clock failure; COSC FRCPLL; PLLODIV DIV_2; PBDIVRDY disabled; SLOCK out of lock; FRCDIV FRC/1; SLPEN Idle on WAIT instruction; NOSC FRCPLL; PLLMULT MUL_24; SOSCEN disabled; PBDIV DIV_8; CLKLOCK unlocked; OSWEN Switch is Complete; SOSCRDY disabled; 
+    OSCCON = 0x81F1100;
     SYSTEM_RegLock();
     // TUN Center Frequency; 
     OSCTUN = 0x0;
