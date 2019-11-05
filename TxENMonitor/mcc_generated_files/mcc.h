@@ -51,7 +51,7 @@
 #include <stdbool.h>
 #include "interrupt_manager.h"
 
-#define _XTAL_FREQ  8000000UL
+#define _XTAL_FREQ  40000000UL
 
 /**
  * @Param

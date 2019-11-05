@@ -50,12 +50,12 @@
 #pragma config IOL1WAY = ON    // Peripheral Pin Select Configuration->Allow only one reconfiguration
 
 // DEVCFG2
-#pragma config FPLLIDIV = DIV_1    // PLL Input Divider->1x Divider
-#pragma config FPLLMUL = MUL_24    // PLL Multiplier->24x Multiplier
-#pragma config FPLLODIV = DIV_1    // System PLL Output Clock Divider->PLL Divide by 1
+#pragma config FPLLIDIV = DIV_2    // PLL Input Divider->2x Divider
+#pragma config FPLLMUL = MUL_20    // PLL Multiplier->20x Multiplier
+#pragma config FPLLODIV = DIV_2    // System PLL Output Clock Divider->PLL Divide by 2
 
 // DEVCFG1
-#pragma config FNOSC = FRC    // Oscillator Selection Bits->Fast RC Osc (FRC)
+#pragma config FNOSC = FRCPLL    // Oscillator Selection Bits->Fast RC Osc with PLL
 #pragma config FSOSCEN = ON    // Secondary Oscillator Enable->Enabled
 #pragma config IESO = ON    // Internal/External Switch Over->Enabled
 #pragma config POSCMOD = OFF    // Primary Oscillator Configuration->Primary osc disabled
@@ -118,8 +118,8 @@ void SYSTEM_RegLock(void)
 void OSCILLATOR_Initialize(void)
 {
     SYSTEM_RegUnlock(); 
-    // CF no clock failure; COSC FRC; PLLODIV DIV_1; PBDIVRDY disabled; SLOCK out of lock; FRCDIV FRC/1; SLPEN Idle on WAIT instruction; NOSC FRC; PLLMULT MUL_24; SOSCEN disabled; PBDIV DIV_8; CLKLOCK unlocked; OSWEN Switch is Complete; SOSCRDY disabled; 
-    OSCCON = 0x1F0000;
+    // CF no clock failure; COSC FRCPLL; PLLODIV DIV_2; PBDIVRDY disabled; SLOCK out of lock; FRCDIV FRC/1; SLPEN Idle on WAIT instruction; NOSC FRCPLL; PLLMULT MUL_20; SOSCEN disabled; PBDIV DIV_8; CLKLOCK unlocked; OSWEN Switch is Complete; SOSCRDY disabled; 
+    OSCCON = 0x81D1100;
     SYSTEM_RegLock();
     // TUN Center Frequency; 
     OSCTUN = 0x0;
