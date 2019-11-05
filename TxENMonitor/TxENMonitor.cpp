@@ -6,7 +6,7 @@ const uint32_t portBPinMask = 0b1110100000000000;
 const uint32_t portATxEnable = 1;
 const uint32_t portATxEnableClash = 2;
 
-int main(int argc, char** argv)
+extern "C" void TxENMonitor()
 {
     ANSELA = 0;
     ANSELB = 0;
@@ -22,7 +22,7 @@ int main(int argc, char** argv)
         
         uint32_t count = 0;
         
-        for (uint32_t i = 0; i < 16; i++)
+        for (uint32_t i = 11; i < 16; i++)
         {
             if (tXEnableBits & (1 << i)) count++;
         }
@@ -45,7 +45,5 @@ int main(int argc, char** argv)
             LATACLR = portATxEnableClash;
         }
     }
-    
-    return 0;
 }
 
