@@ -11,12 +11,12 @@
 int main(int argc, char** argv)
 {
 	sdl::widgets::window_application app{argc, argv, "Bus Debugger", 0, 0,
-										 2000, 900};
+										 1000, 900};
 	sdl::mouse_state mouse{app.mouse_events};
 
 	app.resize_font(16);
 
-	sdl::widgets::label value[1509];
+	sdl::widgets::label value[748];
 	int const rows = 44;
 
 	int i = 0;
