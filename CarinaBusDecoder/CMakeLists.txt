@@ -4,6 +4,8 @@ add_library(CarinaBusDecoder
 		RawPacketDestination.h
 		RecordedLogFile.cpp
 		RecordedLogFile.h
+		RecordedLogFileWriter.cpp
+		RecordedLogFileWriter.h
 		TimestampedBytesHeader.h
 		ValuePacketValues.cpp
 		ValuePacketValues.h
