@@ -9,10 +9,14 @@
 #include <iomanip>
 #include <cstdint>
 #include <bitset>
+#include <iostream>
+
+#include "SerialPort.h"
 
 #include "TimestampedBytesHeader.h"
 #include "RawPacketDestination.h"
 #include "Decoder.h"
+#include "RecordedLogFileWriter.h"
 
 #include "Bus/Internal/Packets.h"
 
@@ -286,16 +290,20 @@ struct GUI : public RawPacketDestination
 	}
 };
 
-#include <chrono>
-
 int main(int argc, char** argv)
 {
-	if(argc < 2)
+	if(argc < 3)
+	{
+		std::cerr << "Invalid arguments, command format is:\n";
+		std::cerr << argv[0] << " <device> <log file>\n";
+		std::cerr << "e.g. " << argv[0] << " /dev/ttyUSB0 log.bin" << std::endl;
 		return 1;
+	}
 
 	GUI gui{argc, argv};
 
-	std::ifstream file{argv[1], std::ios_base::binary};
+	SerialPort port{argv[1]};
+	RecordedLogFileWriter logFile{argv[2]};
 
 	Decoder decoder{&gui};
 
@@ -307,19 +315,10 @@ int main(int argc, char** argv)
 	{
 		gui.app.events.poll();
 
-		for(int i = 0; i < 1; ++i)
-		{
-			if (!file.eof())
-			{
-				TimestampedBytesHeader header;
-				file.read(reinterpret_cast<char*>(&header), sizeof(header));
-
-				char buffer[1024];
-				file.read(buffer, header.length);
-
-				decoder.DecodeBytes(header.time, buffer, header.length);
-			}
-		}
+		unsigned char buffer[100];
+		auto length = port.Read(buffer, sizeof(buffer));
+		logFile.Write(buffer, length);
+		decoder.DecodeBytes(buffer, length);
 
 		gui.UpdateWidgets();
 
