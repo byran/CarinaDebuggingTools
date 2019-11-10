@@ -18,6 +18,8 @@
 
 #include "SourceCodeProFont.h"
 
+#include "FPSMonitor.h"
+
 using namespace std;
 
 struct TimeslotGUIWidgets
@@ -300,17 +302,9 @@ int main(int argc, char** argv)
 	sdl::widgets::label times{ GUI::windowWidth - 100, GUI::windowHeight - GUI::labelYSpacing, "times"};
 	times.colour({ 0xFF, 0xFF, 0xFF, 0xFF });
 
-	using timer = std::chrono::system_clock;
-	string timesText;
-	unsigned int timesCount{0};
-	unsigned int fpsCalculateRate{10};
-	auto startTime = timer::now();
+	FPSMonitor fps;
 	while (!gui.app.quit)
 	{
-		if(timesCount == 0)
-		{
-			startTime = timer::now();
-		}
 		gui.app.events.poll();
 
 		for(int i = 0; i < 1; ++i)
@@ -329,22 +323,9 @@ int main(int argc, char** argv)
 
 		gui.UpdateWidgets();
 
-		times.text(timesText);
+		times.text(fps.fpsText);
 		gui.app.draw();
-		if(timesCount == fpsCalculateRate)
-		{
-			auto endTime = timer::now();
-			timesCount = 0;
-
-			auto total = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
-			auto fps = 1000000 * fpsCalculateRate / (total.count() ? total.count() : 1);
-			fpsCalculateRate = fps / 2;
-			timesText = to_string(fps) + "fps";
-		}
-		else
-		{
-			++timesCount;
-		}
+		fps.FrameDrawComplete();
 	}
 
 	return 0;

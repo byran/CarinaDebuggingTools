@@ -1,4 +1,6 @@
 add_executable(BusRecorderGUI
+		FPSMonitor.cpp
+		FPSMonitor.h
 		main.cpp
 		)
 
