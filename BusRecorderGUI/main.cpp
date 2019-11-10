@@ -84,7 +84,7 @@ struct GUI : public RawPacketDestination
 	static unsigned int const orLabelTop{andLabelTop + labelYSpacing + 6};
 
 	static unsigned int const logLabelTop{orLabelTop + labelYSpacing + 6};
-	static unsigned int const numberOfLogLabels{10};
+	static unsigned int const numberOfLogLabels{20};
 
 	static unsigned int const windowWidth{800};
 	static unsigned int const windowHeight{logLabelTop + (numberOfLogLabels * labelYSpacing)};
@@ -111,7 +111,7 @@ struct GUI : public RawPacketDestination
 
 	GUI(int argc, char** argv)
 		: app{argc, argv, "Bus Recorder", 0, 0,
-			  windowWidth, windowHeight}
+			  windowWidth, windowHeight, false}
 	{
 		app.colour({ 0x00, 0x00, 0x00, 0xFF });
 		SetLabelPositions();
@@ -280,6 +280,8 @@ struct GUI : public RawPacketDestination
 	}
 };
 
+#include <chrono>
+
 int main(int argc, char** argv)
 {
 	if(argc < 2)
@@ -291,9 +293,16 @@ int main(int argc, char** argv)
 
 	Decoder decoder{&gui};
 
+	sdl::widgets::label times{ GUI::windowWidth - 300, GUI::windowHeight - 16, "times"};
+	times.colour({ 0xFF, 0xFF, 0xFF, 0xFF });
+
+	using timer = std::chrono::system_clock;
+	string timesText;
 	while (!gui.app.quit)
 	{
+		auto a = timer::now();
 		gui.app.events.poll();
+		auto b = timer::now();
 
 		for(int i = 0; i < 1; ++i)
 		{
@@ -309,8 +318,27 @@ int main(int argc, char** argv)
 			}
 		}
 
+		auto c = timer::now();
+
 		gui.UpdateWidgets();
+		auto d = timer::now();
+
+		times.text(timesText);
 		gui.app.draw();
+		auto e =timer::now();
+
+		auto eventPoll = std::chrono::duration_cast<std::chrono::milliseconds>(b - a);
+		auto process = std::chrono::duration_cast<std::chrono::milliseconds>(c - b);
+		auto widgetUpdate = std::chrono::duration_cast<std::chrono::milliseconds>(d - c);
+		auto render = std::chrono::duration_cast<std::chrono::milliseconds>(e - d);
+		auto total = std::chrono::duration_cast<std::chrono::milliseconds>(e - a);
+		timesText =
+			to_string(eventPoll.count()) + ", " +
+				to_string(process.count()) + ", " +
+				to_string(widgetUpdate.count()) + ", " +
+				to_string(render.count()) + ", " +
+				to_string(total.count()) + "=> " +
+				to_string(1000 / total.count());
 	}
 
 	return 0;
