@@ -105,90 +105,37 @@ public:
 
 	void OutputMap(uint32_t map)
 	{
-		if (map & (1 << 0))
-			std::cout << "R--";
-		else
-			std::cout << "...";
-		if (map & (1 << 1))
-			std::cout << "A1-";
-		else
-			std::cout << "...";
-		if (map & (1 << 2))
-			std::cout << "A2-";
-		else
-			std::cout << "...";
-		if (map & (1 << 3))
-			std::cout << "A3-";
-		else
-			std::cout << "...";
-		if (map & (1 << 4))
-			std::cout << "A4-";
-		else
-			std::cout << "...";
-		if (map & (1 << 5))
-			std::cout << "B--";
-		else
-			std::cout << "...";
-		if (map & (1 << 6))
-			std::cout << "D1-";
-		else
-			std::cout << "...";
-		if (map & (1 << 7))
-			std::cout << "D2-";
-		else
-			std::cout << "...";
-		if (map & (1 << 8))
-			std::cout << "D3-";
-		else
-			std::cout << "...";
-		if (map & (1 << 9))
-			std::cout << "D4-";
-		else
-			std::cout << "...";
-		if (map & (1 << 9))
-			std::cout << "D4-";
-		else
-			std::cout << "...";
-		if (map & (1 << 10))
-			std::cout << "*--";
-		else
-			std::cout << "...";
-		if (map & (1 << 11))
-			std::cout << "*--";
-		else
-			std::cout << "...";
-		if (map & (1 << 12))
-			std::cout << "*--";
-		else
-			std::cout << "...";
-		if (map & (1 << 13))
-			std::cout << "*--";
-		else
-			std::cout << "...";
-		if (map & (1 << 14))
-			std::cout << "*--";
-		else
-			std::cout << "...";
-		if (map & (1 << 15))
-			std::cout << "*--";
-		else
-			std::cout << "...";
-		if (map & (1 << 16))
-			std::cout << "*--";
-		else
-			std::cout << "...";
-		if (map & (1 << 17))
-			std::cout << "*--";
-		else
-			std::cout << "...";
-		if (map & (1 << 18))
-			std::cout << "*--";
-		else
-			std::cout << "...";
-		if (map & (1 << 19))
-			std::cout << "Q--";
-		else
-			std::cout << "...";
+		auto AddModuleMapText = [map](uint32_t index, char const* moduleText) {
+			if (map & (1 << index))
+			{
+				std::cout << moduleText;
+			}
+			else
+			{
+				std::cout << "...";
+			}
+		};
+
+		AddModuleMapText(0, "R--");
+		AddModuleMapText(1, "A1-");
+		AddModuleMapText(2, "A2-");
+		AddModuleMapText(3, "A3-");
+		AddModuleMapText(4, "A4-");
+		AddModuleMapText(5, "B--");
+		AddModuleMapText(6, "D1-");
+		AddModuleMapText(7, "D2-");
+		AddModuleMapText(8, "D3-");
+		AddModuleMapText(9, "D4-");
+		AddModuleMapText(10, "*--");
+		AddModuleMapText(11, "*--");
+		AddModuleMapText(12, "*--");
+		AddModuleMapText(13, "*--");
+		AddModuleMapText(14, "*--");
+		AddModuleMapText(15, "*--");
+		AddModuleMapText(16, "*--");
+		AddModuleMapText(17, "*--");
+		AddModuleMapText(18, "*--");
+		AddModuleMapText(19, "Q--");
 	}
 
 	uint32_t previousMap;
