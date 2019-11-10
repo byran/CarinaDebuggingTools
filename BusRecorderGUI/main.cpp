@@ -3,20 +3,20 @@
 #include <sdl_cpp/sdl_cpp.h>
 #include <sdl_cpp/widgets/widgets.h>
 
-#include <fstream>
-#include <sstream>
 #include <algorithm>
-#include <iomanip>
-#include <cstdint>
 #include <bitset>
+#include <cstdint>
+#include <fstream>
+#include <iomanip>
 #include <iostream>
+#include <sstream>
 
 #include "SerialPort.h"
 
-#include "TimestampedBytesHeader.h"
-#include "RawPacketDestination.h"
 #include "Decoder.h"
+#include "RawPacketDestination.h"
 #include "RecordedLogFileWriter.h"
+#include "TimestampedBytesHeader.h"
 
 #include "Bus/Internal/Packets.h"
 
@@ -29,8 +29,8 @@ using namespace std;
 struct TimeslotGUIWidgets
 {
 	static unsigned int const labelYSpacing{28};
-	static SDL_Color constexpr activeColour{ 0xFF, 0xFF, 0xFF, 0xFF };
-	static SDL_Color constexpr inactiveColour{ 0x55, 0x55, 0x55, 0xFF };
+	static SDL_Color constexpr activeColour{0xFF, 0xFF, 0xFF, 0xFF};
+	static SDL_Color constexpr inactiveColour{0x55, 0x55, 0x55, 0xFF};
 
 	sdl::widgets::label index;
 	sdl::widgets::label packetsReceived;
@@ -57,10 +57,7 @@ struct TimeslotGUIWidgets
 	}
 
 	unsigned int packetCount{0};
-	void IncrementPacketCount()
-	{
-		++packetCount;
-	}
+	void IncrementPacketCount() { ++packetCount; }
 
 	void UpdateWidgets()
 	{
@@ -83,9 +80,11 @@ struct GUI : public RawPacketDestination
 	static unsigned int const labelYSpacing{28};
 
 	static unsigned int const numberOfTimeslotRows{4};
-	static unsigned int const timeslotHeight{(TimeslotGUIWidgets::labelYSpacing * 2) + 6};
+	static unsigned int const timeslotHeight{
+		(TimeslotGUIWidgets::labelYSpacing * 2) + 6};
 
-	static unsigned int const mapLabelTop{numberOfTimeslotRows * timeslotHeight};
+	static unsigned int const mapLabelTop{numberOfTimeslotRows *
+										  timeslotHeight};
 
 	static unsigned int const andLabelTop{mapLabelTop + labelYSpacing + 6};
 
@@ -95,21 +94,24 @@ struct GUI : public RawPacketDestination
 	static unsigned int const numberOfLogLabels{20};
 
 	static unsigned int const windowWidth{1200};
-	static unsigned int const windowHeight{logLabelTop + (numberOfLogLabels * labelYSpacing)};
+	static unsigned int const windowHeight{logLabelTop +
+										   (numberOfLogLabels * labelYSpacing)};
 
-	static SDL_Color constexpr invalidColour = { 0xDD, 0x00, 0x00, 0xFF };
-	static SDL_Color constexpr validColour = { 0xFF, 0xFF, 0xFF, 0xFF };
+	static SDL_Color constexpr invalidColour = {0xDD, 0x00, 0x00, 0xFF};
+	static SDL_Color constexpr validColour = {0xFF, 0xFF, 0xFF, 0xFF};
 
 	sdl::widgets::window_application app;
 	sdl::widgets::label mapLabel;
 	string mapText;
 	sdl::widgets::label andLabel;
 	string andText;
-	SDL_Point mapLinesPoints[2] = { { 0, mapLabelTop - 2 }, { windowWidth, mapLabelTop - 2 } };
+	SDL_Point mapLinesPoints[2] = {{0, mapLabelTop - 2},
+								   {windowWidth, mapLabelTop - 2}};
 	sdl::widgets::lines_no_storage mapLines{mapLinesPoints};
 	sdl::widgets::label orLabel;
 	string orText;
-	SDL_Point logLinesPoints[2] = { { 0, logLabelTop - 2 }, { windowWidth, logLabelTop - 2 } };
+	SDL_Point logLinesPoints[2] = {{0, logLabelTop - 2},
+								   {windowWidth, logLabelTop - 2}};
 	sdl::widgets::lines_no_storage logLines{logLinesPoints};
 	sdl::widgets::label logLabels[numberOfLogLabels];
 	string logText[numberOfLogLabels];
@@ -118,19 +120,21 @@ struct GUI : public RawPacketDestination
 	TimeslotGUIWidgets timeslot[NUMBER_OF_BUS_TIMESLOTS];
 
 	GUI(int argc, char** argv)
-		: app{argc, argv, "Bus Recorder", 0, 0,
-			  windowWidth, windowHeight, false}
+		: app{argc, argv,		 "Bus Recorder", 0,
+			  0,	windowWidth, windowHeight,   false}
 	{
-		app.font = sdl::fonts::ttf_font{SourceCodePro_Medium_ttf, SourceCodePro_Medium_ttf_len, 24};
-		app.colour({ 0x00, 0x00, 0x00, 0xFF });
+		app.font = sdl::fonts::ttf_font{SourceCodePro_Medium_ttf,
+										SourceCodePro_Medium_ttf_len, 24};
+		app.colour({0x00, 0x00, 0x00, 0xFF});
 		SetLabelPositions();
 
 		int x = 0;
 		int y = 0;
 
-		for(int i = 0; i < NUMBER_OF_BUS_TIMESLOTS; ++i)
+		for (int i = 0; i < NUMBER_OF_BUS_TIMESLOTS; ++i)
 		{
-			if((i != 0) && (i % (NUMBER_OF_BUS_TIMESLOTS / numberOfTimeslotRows) == 0))
+			if ((i != 0) &&
+				(i % (NUMBER_OF_BUS_TIMESLOTS / numberOfTimeslotRows) == 0))
 			{
 				x = 0;
 				y += timeslotHeight;
@@ -139,7 +143,8 @@ struct GUI : public RawPacketDestination
 			timeslot[i].SetLocation(x, y);
 			timeslot[i].InitialiseLabels(i);
 
-			x += (windowWidth / (NUMBER_OF_BUS_TIMESLOTS / numberOfTimeslotRows));
+			x += (windowWidth /
+				  (NUMBER_OF_BUS_TIMESLOTS / numberOfTimeslotRows));
 		}
 
 		logLines.colour(validColour);
@@ -169,8 +174,7 @@ struct GUI : public RawPacketDestination
 	{
 		int y = logLabelTop;
 		for_each(begin(logLabels), end(logLabels),
-				 [&y](sdl::widgets::label& p)
-				 {
+				 [&y](sdl::widgets::label& p) {
 					 p.location.y = y;
 					 y += labelYSpacing;
 				 });
@@ -181,7 +185,7 @@ struct GUI : public RawPacketDestination
 		auto label = begin(logLabels);
 		auto text = begin(logText);
 		auto colour = begin(logTextColour);
-		for(; label != end(logLabels); ++label, ++text, ++colour)
+		for (; label != end(logLabels); ++label, ++text, ++colour)
 		{
 			label->text_and_colour(*text, *colour);
 		}
@@ -190,7 +194,7 @@ struct GUI : public RawPacketDestination
 		andLabel.text(andText);
 		orLabel.text(orText);
 
-		for(auto& t : timeslot)
+		for (auto& t : timeslot)
 		{
 			t.UpdateWidgets();
 		}
@@ -201,16 +205,19 @@ struct GUI : public RawPacketDestination
 		logText[0] = move(text);
 		logTextColour[0] = colour;
 		rotate(begin(logText), begin(logText) + 1, end(logText));
-		rotate(begin(logTextColour), begin(logTextColour) + 1, end(logTextColour));
+		rotate(begin(logTextColour), begin(logTextColour) + 1,
+			   end(logTextColour));
 	}
 
-	void NonPacketBytesReceived(unsigned char* bytes, unsigned int length, uint32_t time) override
+	void NonPacketBytesReceived(unsigned char* bytes, unsigned int length,
+								uint32_t time) override
 	{
 		AddLogEntry("Bytes");
 	}
 
 	unsigned int packetCount{0};
-	void PacketReceived(BusHeader* header, unsigned int totalPacketLength, uint32_t time) override
+	void PacketReceived(BusHeader* header, unsigned int totalPacketLength,
+						uint32_t time) override
 	{
 		stringstream s;
 		SDL_Color colour = validColour;
@@ -218,22 +225,24 @@ struct GUI : public RawPacketDestination
 		++packetCount;
 		s << setw(8) << setfill('0') << packetCount << " : ";
 
-		switch(header->packetType)
+		switch (header->packetType)
 		{
 		case BPT_NORMAL_SYNC:
 			s << "Sync            ";
 			ProcessNormalSyncPacket(reinterpret_cast<BusSyncPacket*>(header));
-			colour = SDL_Color{ 0x00, 0xAA, 0x00, 0xFF };
+			colour = SDL_Color{0x00, 0xAA, 0x00, 0xFF};
 			break;
 		case BPT_VALUES:
 			s << "Values          ";
-			ProcessValuesPacket(reinterpret_cast<BusValuesPacketPreamble*>(header));
+			ProcessValuesPacket(
+				reinterpret_cast<BusValuesPacketPreamble*>(header));
 			break;
 		case BPT_TIMESLOT_IN_USE:
 			s << "Time slot in use";
 			break;
 		default:
-			s << "Unknown packet type : " << static_cast<int>(header->packetType);
+			s << "Unknown packet type : "
+			  << static_cast<int>(header->packetType);
 			colour = invalidColour;
 			break;
 		}
@@ -248,7 +257,7 @@ struct GUI : public RawPacketDestination
 
 	void ProcessNormalSyncPacket(BusSyncPacket* packet)
 	{
-		for(unsigned int i = 0; i < NUMBER_OF_BUS_TIMESLOTS; ++i)
+		for (unsigned int i = 0; i < NUMBER_OF_BUS_TIMESLOTS; ++i)
 		{
 			timeslot[i].active = (packet->data.map & (1u << i));
 		}
@@ -279,9 +288,9 @@ struct GUI : public RawPacketDestination
 	void ProcessValuesPacket(BusValuesPacketPreamble* packet)
 	{
 		auto const& slot = packet->data.slot;
-		for(unsigned int i = 0; i < NUMBER_OF_BUS_TIMESLOTS; ++i)
+		for (unsigned int i = 0; i < NUMBER_OF_BUS_TIMESLOTS; ++i)
 		{
-			if(slot & (1u << i))
+			if (slot & (1u << i))
 			{
 				timeslot[i].IncrementPacketCount();
 				break;
@@ -292,7 +301,7 @@ struct GUI : public RawPacketDestination
 
 int main(int argc, char** argv)
 {
-	if(argc < 3)
+	if (argc < 3)
 	{
 		std::cerr << "Invalid arguments, command format is:\n";
 		std::cerr << argv[0] << " <device> <log file>\n";
@@ -307,8 +316,9 @@ int main(int argc, char** argv)
 
 	Decoder decoder{&gui};
 
-	sdl::widgets::label times{ GUI::windowWidth - 100, GUI::windowHeight - GUI::labelYSpacing, "times"};
-	times.colour({ 0xFF, 0xFF, 0xFF, 0xFF });
+	sdl::widgets::label times{GUI::windowWidth - 100,
+							  GUI::windowHeight - GUI::labelYSpacing, "times"};
+	times.colour({0xFF, 0xFF, 0xFF, 0xFF});
 
 	FPSMonitor fps;
 	while (!gui.app.quit)

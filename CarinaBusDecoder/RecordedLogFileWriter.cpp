@@ -16,7 +16,7 @@ namespace
 
 		return (delta.tv_sec * 1000) + (delta.tv_usec / 1000);
 	}
-}
+}  // namespace
 
 RecordedLogFileWriter::RecordedLogFileWriter(char const* name)
 	: file(name, std::ios_base::binary)

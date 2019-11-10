@@ -18,5 +18,4 @@ public:
 	void FrameDrawComplete();
 };
 
-
-#endif //CARINABUSDEBUGGER_FPSMONITOR_H
+#endif  // CARINABUSDEBUGGER_FPSMONITOR_H

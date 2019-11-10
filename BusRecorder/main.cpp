@@ -1,8 +1,8 @@
-#include "SerialPort.h"
 #include "RecordedLogFileWriter.h"
+#include "SerialPort.h"
 
-#include <csignal>
 #include <chrono>
+#include <csignal>
 #include <iostream>
 #include <string>
 #include <thread>
@@ -48,7 +48,8 @@ int main(int argc, char** argv)
 		}
 	}
 
-	std::cout << "exited" << "\n";
+	std::cout << "exited"
+			  << "\n";
 
 	return 0;
 }

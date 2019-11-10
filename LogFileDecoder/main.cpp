@@ -46,7 +46,6 @@ public:
 		std::cout << "\n";
 	}
 
-
 	void NonPacketBytesReceived(unsigned char* bytes, unsigned int length,
 								uint32_t time) override
 	{
@@ -95,7 +94,8 @@ public:
 
 		std::cout << "Packet with invalid crc\n";
 		auto buffer = reinterpret_cast<unsigned char*>(header);
-		for (uint32_t i = 0; i < (header->dataLength + sizeof(BusHeader) + sizeof(crc_t)); ++i)
+		for (uint32_t i = 0;
+			 i < (header->dataLength + sizeof(BusHeader) + sizeof(crc_t)); ++i)
 		{
 			std::cout << std::hex << std::setw(2) << std::setfill('0')
 					  << static_cast<uint32_t>(buffer[i]) << " ";
@@ -105,57 +105,100 @@ public:
 
 	void OutputMap(uint32_t map)
 	{
-		if(map & (1 << 0)) std::cout << "R--";
-		else std::cout << "...";
-		if(map & (1 << 1)) std::cout << "A1-";
-		else std::cout << "...";
-		if(map & (1 << 2)) std::cout << "A2-";
-		else std::cout << "...";
-		if(map & (1 << 3)) std::cout << "A3-";
-		else std::cout << "...";
-		if(map & (1 << 4)) std::cout << "A4-";
-		else std::cout << "...";
-		if(map & (1 << 5)) std::cout << "B--";
-		else std::cout << "...";
-		if(map & (1 << 6)) std::cout << "D1-";
-		else std::cout << "...";
-		if(map & (1 << 7)) std::cout << "D2-";
-		else std::cout << "...";
-		if(map & (1 << 8)) std::cout << "D3-";
-		else std::cout << "...";
-		if(map & (1 << 9)) std::cout << "D4-";
-		else std::cout << "...";
-		if(map & (1 << 9)) std::cout << "D4-";
-		else std::cout << "...";
-		if(map & (1 << 10)) std::cout << "*--";
-		else std::cout << "...";
-		if(map & (1 << 11)) std::cout << "*--";
-		else std::cout << "...";
-		if(map & (1 << 12)) std::cout << "*--";
-		else std::cout << "...";
-		if(map & (1 << 13)) std::cout << "*--";
-		else std::cout << "...";
-		if(map & (1 << 14)) std::cout << "*--";
-		else std::cout << "...";
-		if(map & (1 << 15)) std::cout << "*--";
-		else std::cout << "...";
-		if(map & (1 << 16)) std::cout << "*--";
-		else std::cout << "...";
-		if(map & (1 << 17)) std::cout << "*--";
-		else std::cout << "...";
-		if(map & (1 << 18)) std::cout << "*--";
-		else std::cout << "...";
-		if(map & (1 << 19)) std::cout << "Q--";
-		else std::cout << "...";
+		if (map & (1 << 0))
+			std::cout << "R--";
+		else
+			std::cout << "...";
+		if (map & (1 << 1))
+			std::cout << "A1-";
+		else
+			std::cout << "...";
+		if (map & (1 << 2))
+			std::cout << "A2-";
+		else
+			std::cout << "...";
+		if (map & (1 << 3))
+			std::cout << "A3-";
+		else
+			std::cout << "...";
+		if (map & (1 << 4))
+			std::cout << "A4-";
+		else
+			std::cout << "...";
+		if (map & (1 << 5))
+			std::cout << "B--";
+		else
+			std::cout << "...";
+		if (map & (1 << 6))
+			std::cout << "D1-";
+		else
+			std::cout << "...";
+		if (map & (1 << 7))
+			std::cout << "D2-";
+		else
+			std::cout << "...";
+		if (map & (1 << 8))
+			std::cout << "D3-";
+		else
+			std::cout << "...";
+		if (map & (1 << 9))
+			std::cout << "D4-";
+		else
+			std::cout << "...";
+		if (map & (1 << 9))
+			std::cout << "D4-";
+		else
+			std::cout << "...";
+		if (map & (1 << 10))
+			std::cout << "*--";
+		else
+			std::cout << "...";
+		if (map & (1 << 11))
+			std::cout << "*--";
+		else
+			std::cout << "...";
+		if (map & (1 << 12))
+			std::cout << "*--";
+		else
+			std::cout << "...";
+		if (map & (1 << 13))
+			std::cout << "*--";
+		else
+			std::cout << "...";
+		if (map & (1 << 14))
+			std::cout << "*--";
+		else
+			std::cout << "...";
+		if (map & (1 << 15))
+			std::cout << "*--";
+		else
+			std::cout << "...";
+		if (map & (1 << 16))
+			std::cout << "*--";
+		else
+			std::cout << "...";
+		if (map & (1 << 17))
+			std::cout << "*--";
+		else
+			std::cout << "...";
+		if (map & (1 << 18))
+			std::cout << "*--";
+		else
+			std::cout << "...";
+		if (map & (1 << 19))
+			std::cout << "Q--";
+		else
+			std::cout << "...";
 	}
 
 	uint32_t previousMap;
 	void NormalSyncPacketReceived(BusSyncPacket* packet,
 								  unsigned int totalPacketLength)
 	{
-		if(totalPacketLength != sizeof(BusSyncPacket))
+		if (totalPacketLength != sizeof(BusSyncPacket))
 		{
-			NonPacketBytesReceived(reinterpret_cast<unsigned char*>(packet), totalPacketLength);
+			NonPacketBytesReceived(reinterpret_cast<unsigned char*>(packet),
+								   totalPacketLength);
 			return;
 		}
 		unsigned int const mapMask = (1 << NUMBER_OF_BUS_TIMESLOTS) - 1;
@@ -163,7 +206,8 @@ public:
 
 		std::cout << SyncTitle;
 		OutputMap(map);
-		std::cout << " " << std::hex << std::setw(6) << std::setfill('0') << map;
+		std::cout << " " << std::hex << std::setw(6) << std::setfill('0')
+				  << map;
 
 		if (map != previousMap)
 		{
@@ -178,7 +222,7 @@ public:
 	void ValuesPacketReceived(BusValuesPacketPreamble* preamble,
 							  unsigned int totalPacketLength)
 	{
-		std::cout << ValueTitle; // << std::dec << preamble->data.slot << "\n";
+		std::cout << ValueTitle;  // << std::dec << preamble->data.slot << "\n";
 		OutputMap(preamble->data.slot);
 		std::cout << "\n";
 		uint16_t required = 291 - 177;

@@ -16,5 +16,4 @@ public:
 	void Write(void const* buffer, size_t length);
 };
 
-
-#endif //CARINABUSDEBUGGER_RECORDEDLOGFILEWRITER_H
+#endif  // CARINABUSDEBUGGER_RECORDEDLOGFILEWRITER_H
