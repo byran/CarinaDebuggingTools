@@ -217,7 +217,7 @@ struct GUI : public RawPacketDestination
 		case BPT_NORMAL_SYNC:
 			s << "Sync            ";
 			ProcessNormalSyncPacket(reinterpret_cast<BusSyncPacket*>(header));
-			colour = invalidColour;
+			colour = SDL_Color{ 0x00, 0xAA, 0x00, 0xFF };
 			break;
 		case BPT_VALUES:
 			s << "Values          ";
@@ -228,6 +228,7 @@ struct GUI : public RawPacketDestination
 			break;
 		default:
 			s << "Unknown packet type : " << static_cast<int>(header->packetType);
+			colour = invalidColour;
 			break;
 		}
 
