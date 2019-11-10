@@ -303,6 +303,7 @@ int main(int argc, char** argv)
 	using timer = std::chrono::system_clock;
 	string timesText;
 	unsigned int timesCount{0};
+	unsigned int fpsCalculateRate{10};
 	auto startTime = timer::now();
 	while (!gui.app.quit)
 	{
@@ -330,13 +331,15 @@ int main(int argc, char** argv)
 
 		times.text(timesText);
 		gui.app.draw();
-		if(timesCount == 25)
+		if(timesCount == fpsCalculateRate)
 		{
 			auto endTime = timer::now();
 			timesCount = 0;
 
 			auto total = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
-			timesText = to_string(1000000 * 25 / (total.count() ? total.count() : 1)) + "fps";
+			auto fps = 1000000 * fpsCalculateRate / (total.count() ? total.count() : 1);
+			fpsCalculateRate = fps / 2;
+			timesText = to_string(fps) + "fps";
 		}
 		else
 		{
