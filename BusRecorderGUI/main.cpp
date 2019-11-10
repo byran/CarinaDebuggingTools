@@ -16,11 +16,13 @@
 
 #include "Bus/Internal/Packets.h"
 
+#include "SourceCodeProFont.h"
+
 using namespace std;
 
 struct TimeslotGUIWidgets
 {
-	static unsigned int const labelYSpacing{16};
+	static unsigned int const labelYSpacing{28};
 	static SDL_Color constexpr activeColour{ 0xFF, 0xFF, 0xFF, 0xFF };
 	static SDL_Color constexpr inactiveColour{ 0x55, 0x55, 0x55, 0xFF };
 
@@ -72,7 +74,7 @@ struct TimeslotGUIWidgets
 
 struct GUI : public RawPacketDestination
 {
-	static unsigned int const labelYSpacing{16};
+	static unsigned int const labelYSpacing{28};
 
 	static unsigned int const numberOfTimeslotRows{4};
 	static unsigned int const timeslotHeight{(TimeslotGUIWidgets::labelYSpacing * 2) + 6};
@@ -86,7 +88,7 @@ struct GUI : public RawPacketDestination
 	static unsigned int const logLabelTop{orLabelTop + labelYSpacing + 6};
 	static unsigned int const numberOfLogLabels{20};
 
-	static unsigned int const windowWidth{800};
+	static unsigned int const windowWidth{1200};
 	static unsigned int const windowHeight{logLabelTop + (numberOfLogLabels * labelYSpacing)};
 
 	static SDL_Color constexpr invalidColour = { 0xDD, 0x00, 0x00, 0xFF };
@@ -113,6 +115,7 @@ struct GUI : public RawPacketDestination
 		: app{argc, argv, "Bus Recorder", 0, 0,
 			  windowWidth, windowHeight, false}
 	{
+		app.font = sdl::fonts::ttf_font{SourceCodePro_Medium_ttf, SourceCodePro_Medium_ttf_len, 24};
 		app.colour({ 0x00, 0x00, 0x00, 0xFF });
 		SetLabelPositions();
 
@@ -293,16 +296,20 @@ int main(int argc, char** argv)
 
 	Decoder decoder{&gui};
 
-	sdl::widgets::label times{ GUI::windowWidth - 300, GUI::windowHeight - 16, "times"};
+	sdl::widgets::label times{ GUI::windowWidth - 100, GUI::windowHeight - GUI::labelYSpacing, "times"};
 	times.colour({ 0xFF, 0xFF, 0xFF, 0xFF });
 
 	using timer = std::chrono::system_clock;
 	string timesText;
+	unsigned int timesCount{0};
+	auto startTime = timer::now();
 	while (!gui.app.quit)
 	{
-		auto a = timer::now();
+		if(timesCount == 0)
+		{
+			startTime = timer::now();
+		}
 		gui.app.events.poll();
-		auto b = timer::now();
 
 		for(int i = 0; i < 1; ++i)
 		{
@@ -318,27 +325,22 @@ int main(int argc, char** argv)
 			}
 		}
 
-		auto c = timer::now();
-
 		gui.UpdateWidgets();
-		auto d = timer::now();
 
 		times.text(timesText);
 		gui.app.draw();
-		auto e =timer::now();
+		if(timesCount == 25)
+		{
+			auto endTime = timer::now();
+			timesCount = 0;
 
-		auto eventPoll = std::chrono::duration_cast<std::chrono::milliseconds>(b - a);
-		auto process = std::chrono::duration_cast<std::chrono::milliseconds>(c - b);
-		auto widgetUpdate = std::chrono::duration_cast<std::chrono::milliseconds>(d - c);
-		auto render = std::chrono::duration_cast<std::chrono::milliseconds>(e - d);
-		auto total = std::chrono::duration_cast<std::chrono::milliseconds>(e - a);
-		timesText =
-			to_string(eventPoll.count()) + ", " +
-				to_string(process.count()) + ", " +
-				to_string(widgetUpdate.count()) + ", " +
-				to_string(render.count()) + ", " +
-				to_string(total.count()) + "=> " +
-				to_string(1000 / total.count());
+			auto total = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
+			timesText = to_string(1000000 * 25 / (total.count() ? total.count() : 1)) + "fps";
+		}
+		else
+		{
+			++timesCount;
+		}
 	}
 
 	return 0;

@@ -5,4 +5,5 @@ add_executable(BusRecorderGUI
 target_link_libraries(BusRecorderGUI PUBLIC
 		CarinaBusDecoder
 		sdl-cpp
+		SourceCodeProFont
 		)
