@@ -210,7 +210,6 @@ void GUI::ProcessValuesPacket(BusValuesPacketPreamble* packet)
 			case BUS_VARIANTS_K:
 			case BUS_VARIANTS_E:
 			case BUS_VARIANTS_Q:
-			case BUS_VERSION_F:
 			case BUS_VARIANTS_F:
 				timeslot[i].variantText = "Variant " + to_string(value.value);
 				break;
