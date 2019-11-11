@@ -8,12 +8,18 @@
 
 struct TimeslotGUIWidgets
 {
-	static unsigned int const labelYSpacing{28};
+	static unsigned int const numberOfLabels{4};
+	static unsigned int const labelYSpacing{24};
 	static SDL_Color constexpr activeColour{0xFF, 0xFF, 0xFF, 0xFF};
 	static SDL_Color constexpr inactiveColour{0x55, 0x55, 0x55, 0xFF};
 
 	sdl::widgets::label index;
 	sdl::widgets::label packetsReceived;
+	sdl::widgets::label whatICanSee;
+	sdl::widgets::label variant;
+
+	std::string whatICanSeeText;
+	std::string variantText;
 
 	bool active{false};
 
@@ -29,6 +35,4 @@ struct TimeslotGUIWidgets
 	void UpdateWidgets();
 };
 
-
-
-#endif //CARINABUSDEBUGGER_TIMESLOTGUIWIDGETS_H
+#endif  // CARINABUSDEBUGGER_TIMESLOTGUIWIDGETS_H

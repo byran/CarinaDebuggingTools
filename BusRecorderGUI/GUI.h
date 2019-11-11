@@ -8,16 +8,17 @@
 
 #include "RawPacketDestination.h"
 
-
 #include "Bus/Internal/Packets.h"
 
 struct GUI : public RawPacketDestination
 {
-	static unsigned int const labelYSpacing{28};
+	static unsigned int const labelYSpacing{24};
 
 	static unsigned int const numberOfTimeslotRows{4};
 	static unsigned int const timeslotHeight{
-		(TimeslotGUIWidgets::labelYSpacing * 2) + 6};
+		(TimeslotGUIWidgets::labelYSpacing *
+		 TimeslotGUIWidgets::numberOfLabels) +
+		6};
 
 	static unsigned int const mapLabelTop{numberOfTimeslotRows *
 										  timeslotHeight};
@@ -27,7 +28,7 @@ struct GUI : public RawPacketDestination
 	static unsigned int const orLabelTop{andLabelTop + labelYSpacing + 6};
 
 	static unsigned int const logLabelTop{orLabelTop + labelYSpacing + 6};
-	static unsigned int const numberOfLogLabels{20};
+	static unsigned int const numberOfLogLabels{16};
 
 	static unsigned int const windowWidth{1200};
 	static unsigned int const windowHeight{logLabelTop +
@@ -67,10 +68,11 @@ struct GUI : public RawPacketDestination
 	unsigned int packetCount{0};
 	void PacketReceived(BusHeader* header, unsigned int totalPacketLength,
 						uint32_t time) override;
-	void PacketWithInvalidCrcReceived(BusHeader* header, uint32_t time) override;
+	void PacketWithInvalidCrcReceived(BusHeader* header,
+									  uint32_t time) override;
 
 	void ProcessNormalSyncPacket(BusSyncPacket* packet);
 	void ProcessValuesPacket(BusValuesPacketPreamble* packet);
 };
 
-#endif //CARINABUSDEBUGGER_GUI_H
+#endif  // CARINABUSDEBUGGER_GUI_H

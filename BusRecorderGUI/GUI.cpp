@@ -2,19 +2,20 @@
 
 #include "SourceCodeProFont.h"
 
-#include <bitset>
+#include "ValuePacketValues.h"
+
 #include <algorithm>
+#include <bitset>
 #include <iomanip>
 #include <sstream>
 
 using namespace std;
 
 GUI::GUI(int argc, char** argv)
-	: app{argc, argv,		 "Bus Recorder", 0,
-		  0,	windowWidth, windowHeight,   false}
+	: app{argc, argv, "Bus Recorder", 0, 0, windowWidth, windowHeight, false}
 {
 	app.font = sdl::fonts::ttf_font{SourceCodePro_Medium_ttf,
-									SourceCodePro_Medium_ttf_len, 24};
+									SourceCodePro_Medium_ttf_len, 20};
 	app.colour({0x00, 0x00, 0x00, 0xFF});
 	SetLabelPositions();
 
@@ -33,8 +34,7 @@ GUI::GUI(int argc, char** argv)
 		timeslot[i].SetLocation(x, y);
 		timeslot[i].InitialiseLabels(i);
 
-		x += (windowWidth /
-			  (NUMBER_OF_BUS_TIMESLOTS / numberOfTimeslotRows));
+		x += (windowWidth / (NUMBER_OF_BUS_TIMESLOTS / numberOfTimeslotRows));
 	}
 
 	logLines.colour(validColour);
@@ -63,11 +63,10 @@ GUI::GUI(int argc, char** argv)
 void GUI::SetLabelPositions()
 {
 	int y = logLabelTop;
-	for_each(begin(logLabels), end(logLabels),
-			 [&y](sdl::widgets::label& p) {
-				 p.location.y = y;
-				 y += labelYSpacing;
-			 });
+	for_each(begin(logLabels), end(logLabels), [&y](sdl::widgets::label& p) {
+		p.location.y = y;
+		y += labelYSpacing;
+	});
 }
 
 void GUI::UpdateWidgets()
@@ -95,18 +94,17 @@ void GUI::AddLogEntry(string text, SDL_Color colour)
 	logText[0] = move(text);
 	logTextColour[0] = colour;
 	rotate(begin(logText), begin(logText) + 1, end(logText));
-	rotate(begin(logTextColour), begin(logTextColour) + 1,
-		   end(logTextColour));
+	rotate(begin(logTextColour), begin(logTextColour) + 1, end(logTextColour));
 }
 
 void GUI::NonPacketBytesReceived(unsigned char* bytes, unsigned int length,
-							uint32_t time)
+								 uint32_t time)
 {
 	AddLogEntry("Bytes");
 }
 
 void GUI::PacketReceived(BusHeader* header, unsigned int totalPacketLength,
-					uint32_t time)
+						 uint32_t time)
 {
 	stringstream s;
 	SDL_Color colour = validColour;
@@ -119,19 +117,17 @@ void GUI::PacketReceived(BusHeader* header, unsigned int totalPacketLength,
 	case BPT_NORMAL_SYNC:
 		s << "Sync            ";
 		ProcessNormalSyncPacket(reinterpret_cast<BusSyncPacket*>(header));
-		colour = SDL_Color{0x00, 0xAA, 0x00, 0xFF};
+		colour = {0x00, 0xAA, 0x00, 0xFF};
 		break;
 	case BPT_VALUES:
 		s << "Values          ";
-		ProcessValuesPacket(
-			reinterpret_cast<BusValuesPacketPreamble*>(header));
+		ProcessValuesPacket(reinterpret_cast<BusValuesPacketPreamble*>(header));
 		break;
 	case BPT_TIMESLOT_IN_USE:
 		s << "Time slot in use";
 		break;
 	default:
-		s << "Unknown packet type : "
-		  << static_cast<int>(header->packetType);
+		s << "Unknown packet type : " << static_cast<int>(header->packetType);
 		colour = invalidColour;
 		break;
 	}
@@ -174,15 +170,51 @@ void GUI::ProcessNormalSyncPacket(BusSyncPacket* packet)
 	}
 }
 
+#include "Modules/TypeR/ConvertedProject_R_Rx_IDs.h"
+
 void GUI::ProcessValuesPacket(BusValuesPacketPreamble* packet)
 {
 	auto const& slot = packet->data.slot;
-	for (unsigned int i = 0; i < NUMBER_OF_BUS_TIMESLOTS; ++i)
+	unsigned int i;
+	for (i = 0; i < NUMBER_OF_BUS_TIMESLOTS; ++i)
 	{
 		if (slot & (1u << i))
 		{
 			timeslot[i].IncrementPacketCount();
 			break;
+		}
+	}
+
+	if (i < NUMBER_OF_BUS_TIMESLOTS)
+	{
+		uint16_t const required = 291 - 177;
+		uint16_t const requiredUpper = required + 4;
+
+		for (auto& value : packet)
+		{
+			auto const index = (value.index & 0x7FFFu);
+			switch (index)
+			{
+			case BUS_DIAGNOSTICS_TYPE_A_WHAT_I_CAN_SEE:
+			case BUS_DIAGNOSTICS_TYPE_B_WHAT_I_CAN_SEE:
+			case BUS_DIAGNOSTICS_TYPE_D_WHAT_I_CAN_SEE:
+			case BUS_DIAGNOSTICS_TYPE_R_WHAT_I_CAN_SEE:
+			case BUS_DIAGNOSTICS_TYPE_E_WHAT_I_CAN_SEE:
+			case BUS_DIAGNOSTICS_TYPE_F_WHAT_I_CAN_SEE:
+				timeslot[i].whatICanSeeText = "WICS " + to_string(value.value);
+				break;
+			case BUS_VARIANTS_R:
+			case BUS_VARIANTS_A:
+			case BUS_VARIANTS_B:
+			case BUS_VARIANTS_D:
+			case BUS_VARIANTS_K:
+			case BUS_VARIANTS_E:
+			case BUS_VARIANTS_Q:
+			case BUS_VERSION_F:
+			case BUS_VARIANTS_F:
+				timeslot[i].variantText = "Variant " + to_string(value.value);
+				break;
+			}
 		}
 	}
 }

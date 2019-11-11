@@ -10,8 +10,8 @@
 #include "RecordedLogFileWriter.h"
 #include "TimestampedBytesHeader.h"
 
-#include "GUI.h"
 #include "FPSMonitor.h"
+#include "GUI.h"
 
 using namespace std;
 
@@ -63,7 +63,7 @@ void RunWithFile(int argc, char** argv)
 	{
 		gui.app.events.poll();
 
-		for(int i = 0; i < 1; ++i)
+		for (int i = 0; i < 1; ++i)
 		{
 			if (!file.eof())
 			{
@@ -85,7 +85,6 @@ void RunWithFile(int argc, char** argv)
 	}
 }
 
-
 int main(int argc, char** argv)
 {
 	if (argc < 2)
@@ -99,12 +98,12 @@ int main(int argc, char** argv)
 		return 1;
 	}
 
-	if(argc == 2)
+	if (argc == 2)
 	{
 		RunWithFile(argc, argv);
 	}
 
-	if(argc == 3)
+	if (argc == 3)
 	{
 		RunWithSerialPort(argc, argv);
 	}
