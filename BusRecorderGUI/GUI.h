@@ -56,7 +56,7 @@ struct GUI : public RawPacketDestination
 
 	TimeslotGUIWidgets timeslot[NUMBER_OF_BUS_TIMESLOTS];
 
-	GUI(int argc, char** argv);
+	GUI();
 
 	void SetLabelPositions();
 

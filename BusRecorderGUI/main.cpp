@@ -15,9 +15,9 @@
 
 using namespace std;
 
-void RunWithSerialPort(int argc, char** argv)
+void RunWithSerialPort(char** argv)
 {
-	GUI gui{argc, argv};
+	GUI gui;
 
 	SerialPort port{argv[1]};
 	RecordedLogFileWriter logFile{argv[2]};
@@ -46,9 +46,9 @@ void RunWithSerialPort(int argc, char** argv)
 	}
 }
 
-void RunWithFile(int argc, char** argv)
+void RunWithFile(char** argv)
 {
-	GUI gui{argc, argv};
+	GUI gui;
 
 	std::ifstream file{argv[1], std::ios_base::binary};
 
@@ -100,12 +100,12 @@ int main(int argc, char** argv)
 
 	if (argc == 2)
 	{
-		RunWithFile(argc, argv);
+		RunWithFile(argv);
 	}
 
 	if (argc == 3)
 	{
-		RunWithSerialPort(argc, argv);
+		RunWithSerialPort(argv);
 	}
 
 	return 0;

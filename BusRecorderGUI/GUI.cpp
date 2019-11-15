@@ -11,8 +11,8 @@
 
 using namespace std;
 
-GUI::GUI(int argc, char** argv)
-	: app{argc, argv, "Bus Recorder", 0, 0, windowWidth, windowHeight, false}
+GUI::GUI()
+	: app{"Bus Recorder", 0, 0, windowWidth, windowHeight, false}
 {
 	app.font = sdl::fonts::ttf_font{SourceCodePro_Medium_ttf,
 									SourceCodePro_Medium_ttf_len, 20};
