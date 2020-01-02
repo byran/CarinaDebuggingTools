@@ -1,6 +1,3 @@
-/.idea/
-cmake-build-*/
-
 **/nbproject/Makefile-*
 **/nbproject/Package-*
 **/nbproject/private
@@ -8,4 +5,3 @@ cmake-build-*/
 **/build/
 **/disassembly/
 **/dist/
-

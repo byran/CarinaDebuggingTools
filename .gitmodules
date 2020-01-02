@@ -1,6 +1,6 @@
 [submodule "submodules/Carina"]
-	path = submodules/Carina
+	path = BusDebugger/submodules/Carina
 	url = git@github.com:absw/Carina.git
 [submodule "submodules/sdl_cpp_wrapper"]
-	path = submodules/sdl_cpp_wrapper
+	path = BusDebugger/submodules/sdl_cpp_wrapper
 	url = git@github.com:hiddeninplainsight/sdl_cpp_wrapper.git
