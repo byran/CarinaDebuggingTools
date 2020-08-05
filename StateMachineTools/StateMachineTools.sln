@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvertProject", "ConvertProject\ConvertProject.csproj", "{9326C2EC-B9B0-48D1-AEA5-FD572C611A53}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carina.StateMachines", "Carina.StateMachines\Carina.StateMachines.csproj", "{94545FAA-412A-4A54-9F22-B4F80083CD49}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9326C2EC-B9B0-48D1-AEA5-FD572C611A53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9326C2EC-B9B0-48D1-AEA5-FD572C611A53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9326C2EC-B9B0-48D1-AEA5-FD572C611A53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9326C2EC-B9B0-48D1-AEA5-FD572C611A53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94545FAA-412A-4A54-9F22-B4F80083CD49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94545FAA-412A-4A54-9F22-B4F80083CD49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94545FAA-412A-4A54-9F22-B4F80083CD49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94545FAA-412A-4A54-9F22-B4F80083CD49}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
