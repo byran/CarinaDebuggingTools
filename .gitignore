@@ -5,3 +5,5 @@
 **/build/
 **/disassembly/
 **/dist/
+
+.vs/
