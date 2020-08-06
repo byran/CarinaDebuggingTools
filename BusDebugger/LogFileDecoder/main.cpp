@@ -205,13 +205,17 @@ int ParseNonTimestampedFile(char* fileName)
 {
 	PacketOutput output;
 	Decoder decoder{&output};
-	std::ifstream file{fileName};
+	std::ifstream file{fileName, std::ios::binary};
 
 	char buffer[1024];
-	unsigned int readLength;
+	decltype(file.tellg()) readLength;
+	auto previousPosition = file.tellg();
 	do
 	{
-		readLength = file.readsome(buffer, sizeof(buffer));
+		file.read(buffer, sizeof(buffer));
+		auto position = file.tellg();
+		readLength = position - previousPosition;
+		previousPosition = position;
 		decoder.DecodeBytes(reinterpret_cast<unsigned char*>(buffer),
 							readLength);
 	} while (readLength > 0);
