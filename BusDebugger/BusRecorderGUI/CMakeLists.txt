@@ -9,7 +9,7 @@ add_executable(BusRecorderGUI
 		)
 
 if(${UNIX})
-	target_compile_definitions(BusRecorderGUI SERIAL_SUPPORT)
+	target_compile_definitions(BusRecorderGUI PUBLIC SERIAL_SUPPORT)
 
 	set(BusRecorderGUISerialLibraries
 			Serial
