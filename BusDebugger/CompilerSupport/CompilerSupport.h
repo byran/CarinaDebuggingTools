@@ -3,6 +3,6 @@
 
 #ifdef WIN32
 #define __attribute__(value)
-#endif WIN32
+#endif
 
 #endif	// CARINABUSDEBUGGER_COMPILERSUPPORT_H
