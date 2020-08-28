@@ -1,16 +1,17 @@
 #ifndef CARINABUSDEBUGGER_SERIALPORT_H
 #define CARINABUSDEBUGGER_SERIALPORT_H
 
-#include <cstddef>
 #include <exception>
 
 class SerialPort
 {
 private:
-	int fd{-1};
+	void* hComm;
 
+	void ConfigureSerialPort();
 public:
-	SerialPort(char const* portname);
+	explicit SerialPort(char const* portName);
+	~SerialPort();
 
 	void Write(void const* buffer, size_t length);
 	size_t Read(void* buffer, size_t length);
@@ -20,4 +21,4 @@ class UnableToOpenSerialPort : public ::std::exception
 {
 };
 
-#endif  // CARINABUSDEBUGGER_SERIALPORT_H
+#endif	// CARINABUSDEBUGGER_SERIALPORT_H

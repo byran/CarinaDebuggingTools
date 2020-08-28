@@ -1,20 +1,14 @@
-if(${UNIX})
-set(CarinaBusDecoderLinuxFiles
-		RecordedLogFileWriter.cpp
-		RecordedLogFileWriter.h
-		)
-endif(${UNIX})
-
 add_library(CarinaBusDecoder
 		Decoder.cpp
 		Decoder.h
 		RawPacketDestination.h
 		RecordedLogFile.cpp
 		RecordedLogFile.h
+		RecordedLogFileWriter.cpp
+		RecordedLogFileWriter.h
 		TimestampedBytesHeader.h
 		ValuePacketValues.cpp
 		ValuePacketValues.h
-		${CarinaBusDecoderLinuxFiles}
 		)
 
 target_link_libraries(CarinaBusDecoder PUBLIC

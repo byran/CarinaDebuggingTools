@@ -8,19 +8,11 @@ add_executable(BusRecorderGUI
 		TimeslotGUIWidgets.h
 		)
 
-if(${UNIX})
-	target_compile_definitions(BusRecorderGUI PUBLIC SERIAL_SUPPORT)
-
-	set(BusRecorderGUISerialLibraries
-			Serial
-			)
-endif(${UNIX})
-
 target_link_libraries(BusRecorderGUI PUBLIC
 		CarinaBusDecoder
 		sdl-cpp
 		SourceCodeProFont
-		${BusRecorderGUISerialLibraries}
+		Serial
 		)
 
 copy_sdl2_windows_dlls("${CarinaBusDebugger_BINARY_DIR}/BusRecorderGUI")

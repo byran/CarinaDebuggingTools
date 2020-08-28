@@ -4,30 +4,20 @@
 
 #include <cstdint>
 
-namespace
-{
-	inline uint32_t GetTimeDelta(timeval startTime)
-	{
-		timeval now;
-		gettimeofday(&now, nullptr);
-
-		timeval delta;
-		timersub(&now, &startTime, &delta);
-
-		return (delta.tv_sec * 1000) + (delta.tv_usec / 1000);
-	}
-}  // namespace
-
 RecordedLogFileWriter::RecordedLogFileWriter(char const* name)
 	: file(name, std::ios_base::binary)
 {
-	gettimeofday(&startTime, nullptr);
+	startTime = ::std::chrono::steady_clock::now();
 }
+
+using namespace ::std::chrono;
 
 void RecordedLogFileWriter::Write(void const* buffer, size_t length)
 {
+	auto now = ::std::chrono::steady_clock::now();
+	auto delta = duration_cast<std::chrono::milliseconds>(now - startTime);
 	TimestampedBytesHeader header;
-	header.time = GetTimeDelta(startTime);
+	header.time = delta.count();
 	header.length = length;
 
 	file.write(reinterpret_cast<char const*>(&header), sizeof(header));

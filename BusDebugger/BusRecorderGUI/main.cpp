@@ -4,11 +4,8 @@
 #include <fstream>
 #include <iostream>
 
-#ifdef SERIAL_SUPPORT
 #include "SerialPort.h"
 #include "RecordedLogFileWriter.h"
-#endif
-
 #include "Decoder.h"
 #include "TimestampedBytesHeader.h"
 
@@ -17,7 +14,6 @@
 
 using namespace std;
 
-#ifdef SERIAL_SUPPORT
 void RunWithSerialPort(char** argv)
 {
 	GUI gui;
@@ -48,7 +44,6 @@ void RunWithSerialPort(char** argv)
 		fps.FrameDrawComplete();
 	}
 }
-#endif
 
 void RunWithFile(char** argv)
 {
@@ -109,12 +104,7 @@ int main(int argc, char** argv)
 
 	if (argc == 3)
 	{
-#ifdef SERIAL_SUPPORT
 		RunWithSerialPort(argv);
-#else
-		std::cerr << "Unable to user serial mode on Window" << std::endl;
-		return 1;
-#endif
 	}
 
 	return 0;

@@ -1,13 +1,13 @@
 #ifndef CARINABUSDEBUGGER_RECORDEDLOGFILEWRITER_H
 #define CARINABUSDEBUGGER_RECORDEDLOGFILEWRITER_H
 
-#include <sys/time.h>
+#include <chrono>
 #include <cstddef>
 #include <fstream>
 
 class RecordedLogFileWriter
 {
-	timeval startTime;
+	::std::chrono::steady_clock::time_point startTime;
 	std::ofstream file;
 
 public:
