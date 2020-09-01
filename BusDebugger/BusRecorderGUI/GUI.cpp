@@ -12,7 +12,7 @@
 using namespace std;
 
 GUI::GUI()
-	: app{"Bus Recorder", 0, 0, windowWidth, windowHeight, false}
+	: app{"Bus Recorder", 0, 32, windowWidth, windowHeight, false}
 {
 	app.font = sdl::fonts::ttf_font{SourceCodePro_Medium_ttf,
 									SourceCodePro_Medium_ttf_len, 20};
