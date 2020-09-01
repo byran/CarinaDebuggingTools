@@ -46,7 +46,7 @@ void SerialPort::ConfigureSerialPort()
 		throw UnableToOpenSerialPort();
 	}
 
-	timeouts.ReadIntervalTimeout = 1;
+	timeouts.ReadIntervalTimeout = MAXDWORD;
 	timeouts.ReadTotalTimeoutMultiplier = 0;
 	timeouts.ReadTotalTimeoutConstant = 0;
 
