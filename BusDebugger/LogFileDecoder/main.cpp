@@ -1,13 +1,55 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <iomanip>
 #include "Decoder.h"
 
-//#include "BasicPacketOutput.h"
-//using PacketOutput = BasicPacketOutput;
+#include "BasicPacketOutput.h"
+using PacketOutput = BasicPacketOutput;
 
 #include "CorruptPacketOutput.h"
-using PacketOutput = CorruptPacketOutput;
+//using PacketOutput = CorruptPacketOutput;
+
+char HexCharToValue(char c)
+{
+	if(c >= 'a' && c <= 'f')
+	{
+		return 10 + (c - 'a');
+	}
+
+	if(c >= 'A' && c <= 'F')
+	{
+		return 10 + (c - 'A');
+	}
+
+	return c - '0';
+}
+
+int ParseAsciiFile(char* fileName)
+{
+	PacketOutput output;
+	Decoder decoder{&output};
+	std::ifstream file{fileName, std::ios::in};
+
+	while(!file.eof())
+	{
+		char buffer[1024];
+		uint32_t length{0};
+		while((length < sizeof(buffer)) && !file.eof())
+		{
+			char b[2];
+			file.read(b, 2);
+			buffer[length] = (HexCharToValue(b[0]) << 4) | HexCharToValue(b[1]);
+			++length;
+		}
+		decoder.DecodeBytes(reinterpret_cast<unsigned char*>(buffer),
+							length);
+	}
+
+	std::cout << std::dec << "Packets parsed: " << decoder.packetsParsed
+			  << std::endl;
+	return 0;
+}
 
 int ParseNonTimestampedFile(char* fileName)
 {
@@ -57,6 +99,11 @@ int main(int argc, char** argv)
 	if (strcmp(argv[1], "timestamped") == 0)
 	{
 		return ParseTimestampedFile(argv[2]);
+	}
+
+	if (strcmp(argv[1], "ascii") == 0)
+	{
+		return ParseAsciiFile(argv[2]);
 	}
 
 	return 2;
