@@ -6,6 +6,7 @@
 
 #include "RawPacketDestination.h"
 #include "ValuePacketValues.h"
+#include "Modules/TypeR/ConvertedProject_R_Rx_IDs.h"
 
 // clang-format off
 char const BytesTitle[] =     "Bytes     ";
@@ -172,18 +173,27 @@ public:
 		std::cout << ValueTitle;  // << std::dec << preamble->data.slot << "\n";
 		OutputMap(preamble->data.slot);
 		std::cout << "\n";
-		uint16_t required = 291 - 177;
-		uint16_t requiredUpper = required + 4;
 		// std::cout << "Number of values " << NumberOfValues(preamble) << "\n";
 
 		for (auto&& value : preamble)
 		{
 			auto const index = (value.index & 0x7FFFu);
-			if (index >= required && index < requiredUpper)
+			switch(index)
 			{
+			case BUS_VARIANTS_R:
+			case BUS_VARIANTS_A:
+			case BUS_VARIANTS_B:
+			case BUS_VARIANTS_D:
+			case BUS_VARIANTS_K:
+			case BUS_VARIANTS_E:
+			case BUS_VARIANTS_Q:
+			case BUS_VARIANTS_F:
 				std::cout << std::dec << std::setw(4) << std::setfill('0')
 						  << (value.index & 0x7FFFu) << " => " << value.value
 						  << "\n";
+				break;
+			default:
+				break;
 			}
 		}
 	}
