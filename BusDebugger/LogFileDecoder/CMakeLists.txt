@@ -1,4 +1,8 @@
 add_executable(LogFileDecoder
+		BasicPacketOutput.cpp
+		BasicPacketOutput.h
+		CorruptPacketOutput.cpp
+		CorruptPacketOutput.h
 		main.cpp
 		)
 
