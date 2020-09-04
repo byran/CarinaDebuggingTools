@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvertProject", "ConvertPr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carina.StateMachines", "Carina.StateMachines\Carina.StateMachines.csproj", "{94545FAA-412A-4A54-9F22-B4F80083CD49}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConverterForLogFileDecoder", "ConverterForLogFileDecoder\ConverterForLogFileDecoder.csproj", "{C3F0BEB5-045B-4464-8813-F23C10AD874E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{94545FAA-412A-4A54-9F22-B4F80083CD49}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94545FAA-412A-4A54-9F22-B4F80083CD49}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94545FAA-412A-4A54-9F22-B4F80083CD49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3F0BEB5-045B-4464-8813-F23C10AD874E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3F0BEB5-045B-4464-8813-F23C10AD874E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3F0BEB5-045B-4464-8813-F23C10AD874E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3F0BEB5-045B-4464-8813-F23C10AD874E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
